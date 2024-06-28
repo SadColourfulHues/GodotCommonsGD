@@ -6,7 +6,7 @@ class_name Utils
 ## Alternate smoothing function.
 ## (Decay should be a value ranging between 1 (slow) to 25 (fast))
 ## [From https://www.youtube.com/watch?v=LSNQuFEDOyQ]
-func fhexpdecay(a: float, b: float, decay: float, delta: float) -> float:
+static func fhexpdecay(a: float, b: float, decay: float, delta: float) -> float:
 	return b + (a - b) * exp(-decay * delta)
 
 #endregion
@@ -72,5 +72,16 @@ static func atgetnode(tree: AnimationTree, node_name: StringName) -> AnimationNo
 		return null
 
 	return root.get_node(node_name)
+
+
+## Returns the root motion 'velocity' of the specified [tree] relative to the [target]'s current rotation.
+static func atgetrootmotion(target: Node3D, tree: AnimationTree, delta: float, apply_rotation: bool = true) -> Vector3:
+	var rotation := target.quaternion * tree.get_root_motion_rotation()
+
+	if apply_rotation:
+		target.quaternion = rotation
+
+	return ((tree.get_root_motion_rotation_accumulator().inverse() * rotation)
+		* tree.get_root_motion_position() / delta)
 
 #endregion
