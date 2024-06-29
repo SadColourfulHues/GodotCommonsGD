@@ -85,3 +85,26 @@ static func atgetrootmotion(target: Node3D, tree: AnimationTree, delta: float, a
 		* tree.get_root_motion_position() / delta)
 
 #endregion
+
+#region Resources
+
+## ** [Resource] sync property to name **
+## Synchronises a specified Resource property to its name
+
+## Some prerequisites:
+## + This function can only take effect on resources marked as [@tool].
+## + [source_name] must point to a property containing a String or StringName value
+## + Call this function on the resource's [_validate_property] method, and pass its [property] param to this
+static func rsyncprop2name(resource: Resource, source_name: StringName, property: Dictionary) -> void:
+	if !Engine.is_editor_hint() || property[&"name"] != source_name:
+		return
+
+	var value: String = resource.get(source_name)
+
+	if resource.resource_name == value:
+		return
+
+	resource.resource_name = value
+	resource.emit_changed()
+
+#endregion

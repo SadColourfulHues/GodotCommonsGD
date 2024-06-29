@@ -1,5 +1,6 @@
 ## A resource containing detailed information about an item
 ## [This resource is not expected to change at runtime!]
+@tool
 class_name ItemDefinition
 extends Resource
 
@@ -38,5 +39,12 @@ var m_display_description: String
 ## An image that can be used to represent this item in UIs
 @export
 var p_icon: Texture2D
+
+#endregion
+
+#region Resource Name
+
+func _validate_property(property: Dictionary) -> void:
+    Utils.rsyncprop2name(self, &"m_id", property)
 
 #endregion
