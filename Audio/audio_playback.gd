@@ -68,6 +68,7 @@ func play_stream(stream: AudioSample,
                 volume: float = 1.0,
                 max_pitch_variance: float = 0.0,
                 bus = m_default_bus) -> void:
+
     on_request_stream_np_playback.emit(
         stream,
         volume,
@@ -83,6 +84,7 @@ func play_stream_2d(stream: AudioSample,
                 max_pitch_variance: float = 0.0,
                 max_distance_mod: float = 1.0,
                 bus = m_default_bus) -> void:
+
     on_request_stream_2d_playback.emit(
         stream,
         position,
@@ -101,6 +103,7 @@ func play_stream_3d(stream: AudioSample,
                 max_distance_mod: float = 1.0,
                 unit_size_mod: float = 1.0,
                 bus = m_default_bus) -> void:
+
     on_request_stream_3d_playback.emit(
         stream,
         position,
@@ -117,6 +120,7 @@ func play_item(id: StringName,
                 volume: float = 1.0,
                 max_pitch_variance: float = 0.0,
                 bus = m_default_bus) -> void:
+
     on_request_item_np_playback.emit(
         id,
         volume,
@@ -132,6 +136,7 @@ func play_item_2d(id: StringName,
                 max_pitch_variance: float = 0.0,
                 max_distance_mod: float = 1.0,
                 bus = m_default_bus) -> void:
+
     on_request_item_2d_playback.emit(
         id,
         position,
@@ -150,6 +155,7 @@ func play_item_3d(id: StringName,
                 max_distance_mod: float = 1.0,
                 unit_size_mod: float = 1.0,
                 bus = m_default_bus) -> void:
+
     on_request_item_3d_playback.emit(
         id,
         position,

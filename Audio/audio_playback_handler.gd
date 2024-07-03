@@ -180,6 +180,7 @@ func play_stream(stream: AudioStream,
                 volume: float = 1.0,
                 max_pitch_variance: float = 0.0,
                 bus: StringName = m_default_bus) -> void:
+
     if !m_supports_non_positional:
         return
 
@@ -203,6 +204,7 @@ func play_stream_2d(stream: AudioStream,
                     max_pitch_variance: float = 0.0,
                     max_distance_mod: float = 1.0,
                     bus: StringName = m_default_bus) -> void:
+
     if !m_supports_2d:
         return
 
@@ -229,6 +231,7 @@ func play_stream_3d(stream: AudioStream,
                     max_distance_mod: float = 1.0,
                     unit_size_mod: float = 1.0,
                     bus: StringName = m_default_bus) -> void:
+
     if !m_supports_3d:
         return
 
@@ -253,6 +256,7 @@ func play_item(id: StringName,
                 volume: float = 1.0,
                 max_pitch_variance: float = 0.0,
                 bus: StringName = m_default_bus) -> void:
+
     var stream := __get_stream(id)
 
     if stream == null:
@@ -273,6 +277,7 @@ func play_item_2d(id: StringName,
                 max_pitch_variance: float = 0.0,
                 max_distance_mod: float = 1.0,
                 bus: StringName = m_default_bus) -> void:
+
     var stream := __get_stream(id)
 
     if stream == null:
@@ -296,6 +301,7 @@ func play_item_3d(id: StringName,
                 max_distance_mod: float = 1.0,
                 unit_size_mod: float = 1.0,
                 bus: StringName = m_default_bus) -> void:
+
     var stream := __get_stream(id)
 
     if stream == null:

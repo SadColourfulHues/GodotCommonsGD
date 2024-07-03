@@ -6,15 +6,28 @@ class_name Utils
 ## Alternate smoothing function.
 ## (Decay should be a value ranging between 1 (slow) to 25 (fast))
 ## [From https://www.youtube.com/watch?v=LSNQuFEDOyQ]
-static func fhexpdecay(a: float, b: float, decay: float, delta: float) -> float:
+static func fhexpdecay(a: float,
+					b: float,
+					decay: float,
+					delta: float) -> float:
+
 	return b + (a - b) * exp(-decay * delta)
 
 #endregion
 
 #region 3D Utils
 
+## Turns a Vector2 into Vector3, mapping its XY to X, [optional], Y
+static func xy2xz(v: Vector2, y: float = 0.0) -> Vector3:
+	return Vector3(v.x, y, v.y)
+
+
 ## ([Transform3D]setfwd) Sets the 'forward' axis of a specified transform.
-static func t3dsetfwd(transform: Transform3D, forward: Vector3, weight: float = 0.1, up: Vector3 = Vector3.UP) -> Transform3D:
+static func t3dsetfwd(transform: Transform3D,
+					forward: Vector3,
+					weight: float = 0.1,
+					up: Vector3 = Vector3.UP) -> Transform3D:
+
 	var new_trans := transform
 	new_trans.basis.z = forward
 	new_trans.basis.y = up
@@ -56,13 +69,19 @@ static func twinit(owner: Node, tween: Tween) -> Tween:
 
 
 ## ([AnimationTree]blend) Blends an animation tree property with a specified value and weight
-static func atblend(tree: AnimationTree, path: StringName, value: Variant, weight: float) -> void:
+static func atblend(tree: AnimationTree,
+					path: StringName,
+					value: Variant,
+					weight: float) -> void:
+
 	var previous_value = tree.get(path)
 	tree.set(path, lerp(previous_value, value, weight))
 
 
 ## Returns a pointer to a named AnimationNode in the specified tree's root.(Returns null if the root is null or if the node is nonexistent.)
-static func atgetnode(tree: AnimationTree, node_name: StringName) -> AnimationNode:
+static func atgetnode(tree: AnimationTree,
+					node_name: StringName) -> AnimationNode:
+
 	if !is_instance_valid(tree.tree_root):
 		return null
 
@@ -75,7 +94,11 @@ static func atgetnode(tree: AnimationTree, node_name: StringName) -> AnimationNo
 
 
 ## Returns the root motion 'velocity' of the specified [tree] relative to the [target]'s current rotation.
-static func atgetrootmotion(target: Node3D, tree: AnimationTree, delta: float, apply_rotation: bool = true) -> Vector3:
+static func atgetrootmotion(target: Node3D,
+							tree: AnimationTree,
+							delta: float,
+							apply_rotation: bool = true) -> Vector3:
+
 	var rotation := target.quaternion * tree.get_root_motion_rotation()
 
 	if apply_rotation:
@@ -83,6 +106,33 @@ static func atgetrootmotion(target: Node3D, tree: AnimationTree, delta: float, a
 
 	return ((tree.get_root_motion_rotation_accumulator().inverse() * rotation)
 		* tree.get_root_motion_position() / delta)
+
+
+## ([AnimationTree]OneShotFireGeneric)
+## Plays a generic animation through the specified Animation->OneShot node setup
+static func atosfireg(tree: AnimationTree,
+					anim_node: AnimationNodeAnimation,
+					one_shot_path: StringName,
+					animation_name: StringName) -> void:
+
+	anim_node.animation = animation_name
+	tree.set(one_shot_path, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+
+
+## ([AnimationTree]OneShotFire) Triggers the specified OneShot node
+static func atosfire(tree: AnimationTree, path: StringName) -> void:
+	tree.set(path, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+
+
+## ([AnimationTree]OneShotFade) Fades out the specified OneShot node
+static func atosfade(tree: AnimationTree, path: StringName) -> void:
+	tree.set(path, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
+
+
+## ([AnimationTree]OneShotStop) Stops the specified OneShot node
+static func atosstop(tree: AnimationTree, path: StringName) -> void:
+	tree.set(path, AnimationNodeOneShot.ONE_SHOT_REQUEST_ABORT)
+
 
 #endregion
 
@@ -95,7 +145,10 @@ static func atgetrootmotion(target: Node3D, tree: AnimationTree, delta: float, a
 ## + This function can only take effect on resources marked as [@tool].
 ## + [source_name] must point to a property containing a String or StringName value
 ## + Call this function on the resource's [_validate_property] method, and pass its [property] param to this
-static func rsyncprop2name(resource: Resource, source_name: StringName, property: Dictionary) -> void:
+static func rsyncprop2name(resource: Resource,
+						source_name: StringName,
+						property: Dictionary) -> void:
+
 	if !Engine.is_editor_hint() || property[&"name"] != source_name:
 		return
 
