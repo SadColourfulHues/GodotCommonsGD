@@ -3,17 +3,18 @@
 ## Order and Naming
 
 1. Class header (`class_name`, `extends`, `tool`, etc.)
-2. Enums
-3. Constants
-4. Exports
-5. Class Members
-6. Onready Variables
-7. Functions
-    8. Godot Events (`_ready`, `_process`, etc.)
-    9. Event Handlers (`_on_area_entered`, etc.)
-    10. Public Methods (`play_action`, `is_doing_stuff`, etc.)
-    11. Private Methods (`__handle_input`, `__do_stuff`, etc.)
-    12. Static Functions
+2. Signals
+3. Enums
+4. Constants
+5. Exports
+6. Class Members
+7. Onready Variables
+8. Functions
+    9. Godot Events (`_ready`, `_process`, etc.)
+    10. Event Handlers (`_on_area_entered`, etc.)
+    11. Public Methods (`play_action`, `is_doing_stuff`, etc.)
+    12. Private Methods (`__handle_input`, `__do_stuff`, etc.)
+    13. Static Functions
 
 (Try adding as much region blocks as possible to help improve navigation in VScode.)
 

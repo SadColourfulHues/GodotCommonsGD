@@ -107,72 +107,6 @@ func _exit_tree() -> void:
 
 #endregion
 
-#region Utils
-
-func __get_player(source: Array):
-    for candidate in source:
-        if !is_instance_valid(candidate) || candidate.playing:
-            continue
-        return candidate
-    return null
-
-
-func __get_stream(id: StringName) -> AudioStream:
-    if p_audio_library == null:
-        return null
-
-    return p_audio_library.get_stream(id)
-
-
-func __get_volume(volume: float) -> float:
-    return linear_to_db(max(0.01, volume))
-
-
-func __get_pitch_variance(fac: float) -> float:
-    if is_zero_approx(fac):
-        return 1.0
-    return 1.0 + randf_range(-fac, fac)
-
-
-func __configure() -> void:
-    if m_supports_non_positional:
-        p_np_players.resize(m_max_players)
-
-        for i: int in range(m_max_players):
-            var np_player := AudioStreamPlayer.new()
-            add_child(np_player)
-
-            p_np_players[i] = np_player
-
-    if m_supports_2d:
-        p_2d_players.resize(m_max_players)
-
-        for i: int in range(m_max_players):
-            var a2d_player := AudioStreamPlayer2D.new()
-            add_child(a2d_player)
-
-            a2d_player.panning_strength = m_panning_strength
-            a2d_player.attenuation = m_2d_attenuation
-
-            p_2d_players[i] = a2d_player
-
-    if m_supports_3d:
-        p_3d_players.resize(m_max_players)
-
-        for i: int in range(m_max_players):
-            var a3d_player := AudioStreamPlayer3D.new()
-            add_child(a3d_player)
-
-            a3d_player.panning_strength = m_panning_strength
-            a3d_player.attenuation_filter_cutoff_hz = m_3d_attenuation_cutoff
-            a3d_player.attenuation_filter_db = m_3d_attenuation_db
-            a3d_player.attenuation_model = m_3d_attenuation_model
-            a3d_player.max_db = m_3d_max_decibels
-
-            p_3d_players[i] = a3d_player
-
-#endregion
-
 #region Playback
 
 ## Plays a specified AudioStream through one of its non-positional players
@@ -316,5 +250,71 @@ func play_item_3d(id: StringName,
         unit_size_mod,
         bus
     )
+
+#endregion
+
+#region Utils
+
+func __get_player(source: Array):
+    for candidate in source:
+        if !is_instance_valid(candidate) || candidate.playing:
+            continue
+        return candidate
+    return null
+
+
+func __get_stream(id: StringName) -> AudioStream:
+    if p_audio_library == null:
+        return null
+
+    return p_audio_library.get_stream(id)
+
+
+func __get_volume(volume: float) -> float:
+    return linear_to_db(max(0.01, volume))
+
+
+func __get_pitch_variance(fac: float) -> float:
+    if is_zero_approx(fac):
+        return 1.0
+    return 1.0 + randf_range(-fac, fac)
+
+
+func __configure() -> void:
+    if m_supports_non_positional:
+        p_np_players.resize(m_max_players)
+
+        for i: int in range(m_max_players):
+            var np_player := AudioStreamPlayer.new()
+            add_child(np_player)
+
+            p_np_players[i] = np_player
+
+    if m_supports_2d:
+        p_2d_players.resize(m_max_players)
+
+        for i: int in range(m_max_players):
+            var a2d_player := AudioStreamPlayer2D.new()
+            add_child(a2d_player)
+
+            a2d_player.panning_strength = m_panning_strength
+            a2d_player.attenuation = m_2d_attenuation
+
+            p_2d_players[i] = a2d_player
+
+    if m_supports_3d:
+        p_3d_players.resize(m_max_players)
+
+        for i: int in range(m_max_players):
+            var a3d_player := AudioStreamPlayer3D.new()
+            add_child(a3d_player)
+
+            a3d_player.panning_strength = m_panning_strength
+            a3d_player.attenuation_filter_cutoff_hz = m_3d_attenuation_cutoff
+            a3d_player.attenuation_filter_db = m_3d_attenuation_db
+            a3d_player.attenuation_model = m_3d_attenuation_model
+            a3d_player.max_db = m_3d_max_decibels
+
+            p_3d_players[i] = a3d_player
 
 #endregion
