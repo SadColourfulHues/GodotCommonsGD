@@ -12,7 +12,7 @@ extends Resource
 var m_id: StringName
 
 ## The maximum allowed count of this particular item type
-@export_range(1,99)
+@export
 var m_max_count: int = 99
 
 ## A flag for verifying whether or not this item type can be 'used' by the player
