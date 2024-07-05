@@ -257,7 +257,8 @@ func play_item_3d(id: StringName,
 
 func __get_player(source: Array):
     for candidate in source:
-        if !is_instance_valid(candidate) || candidate.playing:
+        if (!is_instance_valid(candidate) ||
+            (candidate.stream != null && candidate.playing)):
             continue
         return candidate
     return null
