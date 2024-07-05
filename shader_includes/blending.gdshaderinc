@@ -1,6 +1,6 @@
-/* 
+/*
 	*** Blending Modes ***
- 	From https://godotshaders.com
+	From https://godotshaders.com
 */
 
 lowp vec3 blend_screen(vec3 base, vec3 blend) {
@@ -23,7 +23,7 @@ lowp vec3 blend_exclusion(vec3 base, vec3 blend) {
 	return base + blend - 2.0 * base * blend;
 }
 
-lowp vec3 blend_overlay(vec3 base, vec3 blend) 
+lowp vec3 blend_overlay(vec3 base, vec3 blend)
 {
 	vec3 limit = step(0.5, base);
 	return mix(2.0 * base * blend, 1.0 - 2.0 * (1.0 - base) * (1.0 - blend), limit);

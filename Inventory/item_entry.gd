@@ -1,6 +1,6 @@
 ## An object representing an entry slot in an ItemBag
 class_name ItemEntry
-extends RefCounted
+extends Object
 
 ## The item ID associated with this entry
 var m_id: StringName

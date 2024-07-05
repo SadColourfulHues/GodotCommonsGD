@@ -85,24 +85,24 @@ func _ready() -> void:
     if !is_instance_valid(p_playback_resource):
         return
 
-    p_playback_resource.on_request_stream_np_playback.connect(play_stream)
-    p_playback_resource.on_request_stream_2d_playback.connect(play_stream_2d)
-    p_playback_resource.on_request_stream_3d_playback.connect(play_stream_3d)
-    p_playback_resource.on_request_item_np_playback.connect(play_item)
-    p_playback_resource.on_request_item_2d_playback.connect(play_item_2d)
-    p_playback_resource.on_request_item_3d_playback.connect(play_item_3d)
+    p_playback_resource.stream_request_np_playback.connect(play_stream)
+    p_playback_resource.stream_request_2d_playback.connect(play_stream_2d)
+    p_playback_resource.stream_request_3d_playback.connect(play_stream_3d)
+    p_playback_resource.item_request_np_playback.connect(play_item)
+    p_playback_resource.item_request_2d_playback.connect(play_item_2d)
+    p_playback_resource.item_request_3d_playback.connect(play_item_3d)
 
 
 func _exit_tree() -> void:
     if !is_instance_valid(p_playback_resource):
         return
 
-    p_playback_resource.on_request_stream_np_playback.disconnect(play_stream)
-    p_playback_resource.on_request_stream_2d_playback.disconnect(play_stream_2d)
-    p_playback_resource.on_request_stream_3d_playback.disconnect(play_stream_3d)
-    p_playback_resource.on_request_item_np_playback.disconnect(play_item)
-    p_playback_resource.on_request_item_2d_playback.disconnect(play_item_2d)
-    p_playback_resource.on_request_item_3d_playback.disconnect(play_item_3d)
+    p_playback_resource.stream_request_np_playback.disconnect(play_stream)
+    p_playback_resource.stream_request_2d_playback.disconnect(play_stream_2d)
+    p_playback_resource.stream_request_3d_playback.disconnect(play_stream_3d)
+    p_playback_resource.item_request_np_playback.disconnect(play_item)
+    p_playback_resource.item_request_2d_playback.disconnect(play_item_2d)
+    p_playback_resource.item_request_3d_playback.disconnect(play_item_3d)
 
 
 #endregion

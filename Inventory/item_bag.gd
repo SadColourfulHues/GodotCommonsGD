@@ -5,13 +5,13 @@ extends Resource
 #region Signals
 
 ## Called whenever an item has been 'updated' [use-case e.g: item collection notifications, count label updates, etc.]
-signal on_item_changed(slot_idx: int, item_id: StringName, delta: int)
+signal item_changed(slot_idx: int, item_id: StringName, delta: int)
 
 ## Called whenever a new item entry has been added into the bag. [use-case e.g: initialising new cells for inventory UIs.]
-signal on_item_added(slot_idx: int)
+signal item_added(slot_idx: int)
 
 ## Called whenever an item entry has been invalidated in the bag. [use-case e.g: destroying the associated UI cell.]
-signal on_item_removed(slot_idx: int)
+signal item_removed(slot_idx: int)
 
 #endregion
 
@@ -68,7 +68,7 @@ func add_item(id: StringName, count: int) -> bool:
 
     # Add/remove item to/from existing entry #
     for i: int in range(m_max_capacity):
-        if p_items[i].m_id != id:
+        if p_items[i] == null || p_items[i].m_id != id:
             continue
 
         # Prevent item overflow
@@ -83,14 +83,15 @@ func add_item(id: StringName, count: int) -> bool:
 
         # If items underflow, consider it invalid
         if new_count < 1:
+            p_items[i].free()
             p_items[i] = null
 
-            on_item_removed.emit(i)
+            item_removed.emit(i)
             emit_changed()
             return true
 
         # Successful add!
-        on_item_changed.emit(i, id, new_count - current_count)
+        item_changed.emit(i, id, new_count - current_count)
         emit_changed()
         return true
 
@@ -107,11 +108,11 @@ func add_item(id: StringName, count: int) -> bool:
     # Insert as new entry!
     var new_entry = ItemEntry.new()
     new_entry.m_id = id
-    new_entry.m_count = max(item_def.m_max_count, count)
+    new_entry.m_count = min(item_def.m_max_count, count)
 
     p_items[open_idx] = new_entry
 
-    on_item_added.emit(open_idx)
+    item_added.emit(open_idx)
     emit_changed()
     return true
 
@@ -119,8 +120,11 @@ func add_item(id: StringName, count: int) -> bool:
 ## Invalidates all item entries in this bag
 func clear_items() -> void:
     for i: int in range(m_max_capacity):
+        p_items[i].free()
         p_items[i] = null
-        on_item_removed.emit(i)
+
+        item_removed.emit(i)
+
     emit_changed()
 
 
@@ -136,7 +140,7 @@ func get_item_with_id(id: StringName) -> ItemEntry:
 
 ## Returns the item entry at the specified slot [Returns null on empty/invalid entries, and indices provided outside the bounds of the bag's array.]
 func get_item_at_slot(slot_idx: int) -> ItemEntry:
-    if slot_idx < 1 || slot_idx >= m_max_capacity:
+    if slot_idx < 0 || slot_idx >= m_max_capacity:
         return null
 
     return p_items[slot_idx]
