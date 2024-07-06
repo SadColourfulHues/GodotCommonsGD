@@ -1,7 +1,7 @@
 ## Basically GodotCommons + extras for GDscript
 class_name Utils
 
-#region Maths Utils
+#region Maths
 
 ## Alternate smoothing function.
 ## (Decay should be a value ranging between 1 (slow) to 25 (fast))
@@ -15,7 +15,15 @@ static func fhexpdecay(a: float,
 
 #endregion
 
-#region 3D Utils
+#region Random
+
+## Simple chance roll. ([chance] should be a value between 0 - 100.)
+static func roll(chance: int) -> bool:
+	return (randi() % 100) > chance
+
+#endregion
+
+#region 3D
 
 ## Turns a Vector2 into Vector3, mapping its XY to X, [optional], Y
 static func xy2xz(v: Vector2, y: float = 0.0) -> Vector3:

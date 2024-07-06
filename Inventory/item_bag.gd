@@ -27,7 +27,7 @@ var p_items: Array[ItemEntry]
 var m_initialised := false
 
 
-#region Utilities
+#region Item Control
 
 ## Initialises the item bag for use [Call this at least once before doing anything.]
 func initialise() -> void:
@@ -42,19 +42,6 @@ func initialise() -> void:
     for i: int in range(m_max_capacity):
         p_items[i] = null
 
-
-## Returns the first open index in the bag, [Returns -1 if the bag has no more space]
-func __get_open_idx() -> int:
-    for i: int in range(m_max_capacity):
-        if p_items[i] != null:
-            continue
-
-        return i
-    return -1
-
-#endregion
-
-#region Item Control
 
 ## Adds/removes item from the bag.
 ## [If the added item count exceeds its max count, it will be discarded.]
@@ -128,10 +115,26 @@ func clear_items() -> void:
     emit_changed()
 
 
+## Returns the total stored count of a specified item ID
+func get_count(id: StringName) -> int:
+    for item: ItemEntry in p_items:
+        if item == null || item.m_id != id:
+            continue
+
+        return item.m_count
+
+    return 0
+
+
+## Returns the item def for a specified item ID (Calls [ItemRegistry::get_definition])
+func get_definition(id: StringName) -> ItemDefinition:
+    return p_registry.get_definition(id)
+
+
 ## Returns the item entry for a specified item ID [Returns null if the specified item ID does not have an entry in this bag.]
 func get_item_with_id(id: StringName) -> ItemEntry:
     for item: ItemEntry in p_items:
-        if item.m_id != id:
+        if item == null || item.m_id != id:
             continue
 
         return item
@@ -150,5 +153,18 @@ func get_item_at_slot(slot_idx: int) -> ItemEntry:
 func sort_items() -> void:
     p_items.sort_custom(ItemEntry.sort_callback)
     emit_changed()
+
+#endregion
+
+#region Utilities
+
+## Returns the first open index in the bag, [Returns -1 if the bag has no more space]
+func __get_open_idx() -> int:
+    for i: int in range(m_max_capacity):
+        if p_items[i] != null:
+            continue
+
+        return i
+    return -1
 
 #endregion
