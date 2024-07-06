@@ -32,7 +32,6 @@ func _on_list_selection_changed(index: int) -> void:
 ## Just make sure to call [super::_cell_init] to finalise the cell configuration!
 func _cell_init() -> void:
     __set_highlight_visible(false)
-    print("HI")
 
     # Bind activator #
     if !is_instance_valid(p_activator):
