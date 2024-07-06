@@ -19,7 +19,7 @@ static func fhexpdecay(a: float,
 
 ## Simple chance roll. ([chance] should be a value between 0 - 100.)
 static func roll(chance: int) -> bool:
-	return (randi() % 100) > chance
+	return (randi() % 100) < chance
 
 #endregion
 
