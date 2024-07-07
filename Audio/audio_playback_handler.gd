@@ -53,6 +53,10 @@ var m_3d_max_distance := 8.0
 @export
 var m_3d_base_unit_size := 8.0
 
+## "The base sound level before attenuation, in decibels."
+@export
+var m_3d_volume_db := 0.0
+
 ## The attenuation model to use for 3D audio
 @export
 var m_3d_attenuation_model := AudioStreamPlayer3D.ATTENUATION_LOGARITHMIC
@@ -310,6 +314,7 @@ func __configure() -> void:
             var a3d_player := AudioStreamPlayer3D.new()
             add_child(a3d_player)
 
+            a3d_player.volume_db = m_3d_volume_db
             a3d_player.panning_strength = m_panning_strength
             a3d_player.attenuation_filter_cutoff_hz = m_3d_attenuation_cutoff
             a3d_player.attenuation_filter_db = m_3d_attenuation_db
