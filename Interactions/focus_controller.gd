@@ -16,6 +16,9 @@ var p_actions: Array[BaseFocusable]
 #region Events
 
 func _on_action_request_unfocus() -> void:
+    if p_actions.size() <= 1:
+        return
+
     cycle(false)
 
 #endregion
@@ -123,6 +126,14 @@ func cycle(backwards: bool = false) -> void:
             m_action_idx = (m_action_idx + 1) % action_count
 
         # Validation #
+        if !is_instance_valid(p_actions[m_action_idx]):
+            cleanup()
+
+            if p_actions.size() > 0:
+                cycle()
+
+            return
+
         if (!__is_valid_index(m_action_idx) ||
             !p_actions[m_action_idx]._focus_can_interact()):
             continue
