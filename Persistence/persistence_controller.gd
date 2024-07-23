@@ -5,7 +5,6 @@ extends Resource
 const FUNC_WRITER_NAME := &"_on_write"
 const FUNC_READER_NAME := &"_on_restore"
 
-const SAVE_NAME_AUTO := &"Autosave"
 const SAVE_NAME_TRANSIENT := &"Transient"
 
 ## This signal is called before a coordinate read is performed (Useful for cleanup)
@@ -48,7 +47,6 @@ func restore_transient() -> void:
 ## Writes a data file into the specified start_save dir.
 ## This method expects the [writer] object to have a function with the signature: [_on_write(file: FileAccess)])
 static func write(writer: Object,
-        file_ref: FileAccess,
         save_name: StringName,
         data_id: StringName) -> void:
 
@@ -63,14 +61,13 @@ static func write(writer: Object,
         return
 
     # Operation #
-    writer.call(FUNC_WRITER_NAME, file_ref)
-    file_ref.close()
+    writer.call(FUNC_WRITER_NAME, file)
+    file.close()
 
 
 ## Restores state using a data file from the specified start_save dir.
 ## This method expects the [reader] object to have a function with the signature: [_on_restore(file: FileAccess)])
 static func restore(reader: Object,
-        file_ref: FileAccess,
         save_name: StringName,
         data_id: StringName) -> void:
 
@@ -79,7 +76,7 @@ static func restore(reader: Object,
 
     var data_path := get_data_path_for(save_name, data_id)
 
-    if !DirAccess.dir_exists_absolute(data_path):
+    if !FileAccess.file_exists(data_path):
         return
 
     var file := FileAccess.open(data_path, FileAccess.READ)
@@ -88,8 +85,8 @@ static func restore(reader: Object,
         return
 
     # Operation #
-    reader.call(FUNC_READER_NAME, file_ref)
-    file_ref.close()
+    reader.call(FUNC_READER_NAME, file)
+    file.close()
 
 
 #endregion
@@ -134,8 +131,15 @@ static func make_save_dir_if_needed(save_name: StringName) -> void:
 static func delete_save_dir(save_name: StringName) -> void:
     var save_path := get_save_path_for(save_name)
 
-    if save_path == null:
+    # Imagine not having a recursive delete function
+    # in a supposed-to-be 'high-level' API /hj
+    var save_dir := DirAccess.open(save_path)
+
+    if save_dir == null:
         return
+
+    for filename: String in save_dir.get_files():
+        save_dir.remove(filename)
 
     DirAccess.remove_absolute(save_path)
 
@@ -152,9 +156,10 @@ static func copy_save_data(source_name: StringName,
 
     if (source_path.is_empty() ||
         destination_path.is_empty() ||
-        !DirAccess.dir_exists_absolute(source_path) ||
-        !DirAccess.dir_exists_absolute(destination_path)):
+        !DirAccess.dir_exists_absolute(source_path)):
         return
+
+    make_save_dir_if_needed(destination_name)
 
     # Operation #
     var source_files := DirAccess.get_files_at(source_path)
@@ -170,6 +175,20 @@ static func copy_save_data(source_name: StringName,
 
     delete_save_dir(source_name)
 
+
+## Returns a list of save names
+static func get_save_names() -> PackedStringArray:
+    return DirAccess.get_directories_at("user://Saves")
+
+
+## Returns a list of data ID filenames in the specified save file
+static func get_data_ids(save_name: StringName) -> PackedStringArray:
+    var save_path := get_save_path_for(save_name)
+
+    if !DirAccess.dir_exists_absolute(save_path):
+        return PackedStringArray()
+
+    return DirAccess.get_files_at(save_path)
 
 #endregion
 
