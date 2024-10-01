@@ -272,7 +272,7 @@ func __get_stream(id: StringName) -> AudioStream:
 
 
 func __get_volume(volume: float) -> float:
-    return linear_to_db(max(0.01, volume))
+    return linear_to_db(max(0.001, volume))
 
 
 func __get_pitch_variance(fac: float) -> float:
