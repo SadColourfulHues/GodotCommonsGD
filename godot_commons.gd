@@ -76,6 +76,14 @@ static func twinit(owner: Node, tween: Tween) -> Tween:
 	return tween
 
 
+## ([Tween]kill) Stops an active tweener
+static func twkill(tween: Tween) -> void:
+	if !is_instance_valid(tween) || !tween.is_running():
+		return
+
+	tween.kill()
+
+
 ## ([AnimationTree]blend) Blends an animation tree property with a specified value and weight
 static func atblend(tree: AnimationTree,
 					path: StringName,
