@@ -1,11 +1,7 @@
 ## A resource defining a playable audio item
 ## [This resource is not expected to change at runtime!]
-@tool
 class_name AudioItem
 extends Resource
-
-@export
-var m_id: StringName
 
 ## Set this to an audio file for single-stream mode
 @export
@@ -26,12 +22,5 @@ func get_stream() -> AudioStream:
         return p_single_sample
 
     return p_multi_sample.pick_random()
-
-#endregion
-
-#region Resource Name
-
-func _validate_property(property: Dictionary) -> void:
-    Utils.rsyncprop2name(self, &"m_id", property)
 
 #endregion
