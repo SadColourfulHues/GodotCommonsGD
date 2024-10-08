@@ -4,14 +4,12 @@ class_name ItemRegistry
 extends Resource
 
 @export
-var p_entries: Array[ItemDefinition]
+var p_entries: Dictionary[StringName, ItemDefinition]
 
 
 ## Returns an ItemDefinition for a specified item ID [Returns null if nothing was found.]
 func get_definition(id: StringName) -> ItemDefinition:
-    for item: ItemDefinition in p_entries:
-        if item.m_id != id:
-            continue
+    if !p_entries.has(id):
+        return null
 
-        return item
-    return null
+    return p_entries[id]

@@ -7,10 +7,6 @@ extends Resource
 #region Essential Info
 
 @export_group("Essential")
-## The identifier used by the system to track this item type
-@export
-var m_id: StringName
-
 ## The maximum allowed count of this particular item type
 @export
 var m_max_count: int = 99
@@ -45,6 +41,6 @@ var p_icon: Texture2D
 #region Resource Name
 
 func _validate_property(property: Dictionary) -> void:
-    Utils.rsyncprop2name(self, &"m_id", property)
+    Utils.rsyncprop2name(self, &"m_display_name", property)
 
 #endregion
