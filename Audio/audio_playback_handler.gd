@@ -80,11 +80,6 @@ var p_3d_players: Array[AudioStreamPlayer3D]
 func _enter_tree() -> void:
     __configure.call_deferred()
 
-
-func _ready() -> void:
-    if !is_instance_valid(p_playback_resource):
-        return
-
     p_playback_resource.stream_request_np_playback.connect(play_stream)
     p_playback_resource.stream_request_2d_playback.connect(play_stream_2d)
     p_playback_resource.stream_request_3d_playback.connect(play_stream_3d)
@@ -289,6 +284,7 @@ func __configure() -> void:
             var np_player := AudioStreamPlayer.new()
             add_child(np_player)
 
+            np_player.process_thread_group = Node.PROCESS_THREAD_GROUP_MAIN_THREAD
             p_np_players[i] = np_player
 
     if m_supports_2d:
@@ -300,6 +296,7 @@ func __configure() -> void:
 
             a2d_player.panning_strength = m_panning_strength
             a2d_player.attenuation = m_2d_attenuation
+            a2d_player.process_thread_group = Node.PROCESS_THREAD_GROUP_MAIN_THREAD
 
             p_2d_players[i] = a2d_player
 
@@ -315,6 +312,7 @@ func __configure() -> void:
             a3d_player.attenuation_filter_db = m_3d_attenuation_db
             a3d_player.attenuation_model = m_3d_attenuation_model
             a3d_player.max_db = m_3d_max_decibels
+            a3d_player.process_thread_group = Node.PROCESS_THREAD_GROUP_MAIN_THREAD
 
             p_3d_players[i] = a3d_player
 
