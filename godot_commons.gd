@@ -13,6 +13,13 @@ static func fhexpdecay(a: float,
 
 	return b + (a - b) * exp(-decay * delta)
 
+
+## Returns the best angle between [from] and [to]
+## (Intended to be used by tweeners)
+## https://github.com/godotengine/godot/blob/92e51fca7247c932f95a1662aefc28aca96e8de6/core/math/math_funcs.h#L430
+static func shortest_angle(from: float, to: float) -> float:
+	return from + angle_difference(from, to)
+
 #endregion
 
 #region Random
