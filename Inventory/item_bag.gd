@@ -13,6 +13,9 @@ signal item_added(slot_idx: int)
 ## Called whenever an item entry has been invalidated in the bag. [use-case e.g: destroying the associated UI cell.]
 signal item_removed(slot_idx: int)
 
+## Called whenver the bag's state changes
+signal items_updated()
+
 #endregion
 
 ## A resource defining potential item entries
@@ -26,6 +29,7 @@ var m_max_capacity := 24
 var p_items: Array[ItemEntry]
 var m_initialised := false
 
+var p_sort_callback := ItemEntry.sort_callback
 
 #region Item Control
 
@@ -38,9 +42,7 @@ func initialise() -> void:
 
     # Zero-out items array
     p_items.resize(m_max_capacity)
-
-    for i: int in range(m_max_capacity):
-        p_items[i] = null
+    p_items.fill(null)
 
 
 ## Adds/removes item from the bag.
@@ -54,31 +56,32 @@ func add_item(id: StringName, count: int) -> bool:
         return false
 
     # Add/remove item to/from existing entry #
-    for i: int in range(m_max_capacity):
-        if p_items[i] == null || p_items[i].m_id != id:
-            continue
+    var item_idx := p_items.find_custom(__match_callback.bind(id))
 
+    if item_idx != -1:
         # Prevent item overflow
-        var current_count := p_items[i].m_count
+        var current_count := p_items[item_idx].m_count
 
-        p_items[i].m_count = min(
+        p_items[item_idx].m_count = min(
             item_def.m_max_count,
             current_count + count
         )
 
-        var new_count := p_items[i].m_count
+        var new_count := p_items[item_idx].m_count
 
-        # If items underflow, consider it invalid
+        # If items underflow, consider it removed
         if new_count < 1:
-            p_items[i].free()
-            p_items[i] = null
+            p_items[item_idx].free()
+            p_items[item_idx] = null
 
-            item_removed.emit(i)
+            item_removed.emit(item_idx)
+            items_updated.emit()
             emit_changed()
             return true
 
-        # Successful add!
-        item_changed.emit(i, id, new_count - current_count)
+        # Item add to existing successful!
+        item_changed.emit(item_idx, id, new_count - current_count)
+        items_updated.emit()
         emit_changed()
         return true
 
@@ -100,6 +103,7 @@ func add_item(id: StringName, count: int) -> bool:
     p_items[open_idx] = new_entry
 
     item_added.emit(open_idx)
+    items_updated.emit()
     emit_changed()
     return true
 
@@ -112,18 +116,18 @@ func clear_items() -> void:
 
         item_removed.emit(i)
 
+    items_updated.emit()
     emit_changed()
 
 
 ## Returns the total stored count of a specified item ID
 func get_count(id: StringName) -> int:
-    for item: ItemEntry in p_items:
-        if item == null || item.m_id != id:
-            continue
+    var item_idx := p_items.find_custom(__match_callback.bind(id))
 
-        return item.m_count
+    if item_idx == -1:
+        return 0
 
-    return 0
+    return p_items[item_idx].m_count
 
 
 ## Returns the item def for a specified item ID (Calls [ItemRegistry::get_definition])
@@ -133,12 +137,12 @@ func get_definition(id: StringName) -> ItemDefinition:
 
 ## Returns the item entry for a specified item ID [Returns null if the specified item ID does not have an entry in this bag.]
 func get_item_with_id(id: StringName) -> ItemEntry:
-    for item: ItemEntry in p_items:
-        if item == null || item.m_id != id:
-            continue
+    var item_idx := p_items.find_custom(__match_callback.bind(id))
 
-        return item
-    return null
+    if item_idx == -1:
+        return null
+
+    return p_items[item_idx]
 
 
 ## Returns the item entry at the specified slot [Returns null on empty/invalid entries, and indices provided outside the bounds of the bag's array.]
@@ -151,20 +155,21 @@ func get_item_at_slot(slot_idx: int) -> ItemEntry:
 
 ## Sorts the items based on their ID string
 func sort_items() -> void:
-    p_items.sort_custom(ItemEntry.sort_callback)
+    p_items.sort_custom(p_sort_callback)
+    items_updated.emit()
     emit_changed()
 
 #endregion
 
 #region Utilities
 
+## Use with [Array::find_custom]
+func __match_callback(item: ItemEntry, id: StringName) -> bool:
+    return item != null && item.m_id == id
+
+
 ## Returns the first open index in the bag, [Returns -1 if the bag has no more space]
 func __get_open_idx() -> int:
-    for i: int in range(m_max_capacity):
-        if p_items[i] != null:
-            continue
-
-        return i
-    return -1
+    return p_items.find_custom((func(item: ItemEntry): return item == null))
 
 #endregion
