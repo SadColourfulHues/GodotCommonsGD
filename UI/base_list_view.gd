@@ -6,7 +6,7 @@ signal list_selection_changed(index: int)
 
 @export_group("List")
 @export
-var p_cell_template: BaseListCell
+var p_pkg_cell: PackedScene
 
 @export
 var p_viewport: Control
@@ -20,7 +20,7 @@ var m_selected_index: int = -1
 #region Events
 
 func _enter_tree() -> void:
-    if !is_instance_valid(p_cell_template):
+    if !is_instance_valid(p_pkg_cell):
         print_rich("[color=@FF0]BaseListView: invalid configuration -- no cell template assigned [/color]")
         return
 
@@ -29,9 +29,6 @@ func _enter_tree() -> void:
         return
 
     m_last_cell_count = 0
-
-    p_cell_template.visible = false
-    p_cell_template.reparent.call_deferred(self)
 
 
 func _on_cell_activated(index: int) -> void:
@@ -68,7 +65,9 @@ func clear() -> void:
         if child is not BaseListCell || !child.visible:
             continue
 
-        list_selection_changed.disconnect(child._on_list_selection_changed)
+        if list_selection_changed.is_connected(child._on_list_selection_changed):
+            list_selection_changed.disconnect(child._on_list_selection_changed)
+
         child.queue_free()
 
 
@@ -82,12 +81,11 @@ func regenerate() -> void:
 
     for i: int in range(count):
         # Init
-        var cell: BaseListCell = p_cell_template.duplicate()
+        var cell: BaseListCell = p_pkg_cell.instantiate()
         p_viewport.add_child(cell)
 
         cell._cell_init()
         cell._cell_configure(_list_get_data(i))
-        cell.visible = true
 
         # Bind
         list_selection_changed.connect(cell._on_list_selection_changed)
@@ -98,9 +96,8 @@ func regenerate() -> void:
 ## (Prefer this over [regenerate] if the cell count has not changed.)
 func update() -> void:
     for i: int in range(m_last_cell_count):
-        var cell: BaseListCell = p_viewport.get_child(i)
-
-        cell._cell_configure(_list_get_data(i))
+        p_viewport.get_child(i) \
+            ._cell_configure(_list_get_data(i))
 
 
 #endregion
