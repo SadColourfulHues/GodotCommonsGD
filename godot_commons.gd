@@ -14,6 +14,47 @@ static func fhexpdecay(a: float,
 	return b + (a - b) * exp(-decay * delta)
 
 
+## Alternate smoothing function for Vector2
+## (Calls [Utils::fhexpdecay] on each member.)
+static func v2fhexpdecay(a: Vector2,
+					b: Vector2,
+					decay: float,
+					delta: float) -> Vector2:
+
+	return Vector2(
+		fhexpdecay(a.x, b.x, decay, delta),
+		fhexpdecay(a.y, b.y, decay, delta)
+	)
+
+
+## Alternate smoothing function for Vector3
+## (Calls [Utils::fhexpdecay] on each member.)
+static func v3fhexpdecay(a: Vector3,
+					b: Vector3,
+					decay: float,
+					delta: float) -> Vector3:
+
+	return Vector3(
+		fhexpdecay(a.x, b.x, decay, delta),
+		fhexpdecay(a.y, b.y, decay, delta),
+		fhexpdecay(a.z, b.z, decay, delta)
+	)
+
+
+## Alternate smoothing function for Vector3
+## (Calls [Utils::fhexpdecay] on its X and Z members, uses [a]'s Y in the output.)
+static func xzfhexpdecay(a: Vector3,
+					b: Vector3,
+					decay: float,
+					delta: float) -> Vector3:
+
+	return Vector3(
+		fhexpdecay(a.x, b.x, decay, delta),
+		a.y,
+		fhexpdecay(a.z, b.z, decay, delta)
+	)
+
+
 ## Returns the best angle between [from] and [to]
 ## (Intended to be used by tweeners)
 ## https://github.com/godotengine/godot/blob/92e51fca7247c932f95a1662aefc28aca96e8de6/core/math/math_funcs.h#L430
